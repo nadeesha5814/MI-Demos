@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="resolveKYCStatus" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <log level="full">
+        <property name="Sequence" value="AccountSequence started"/>
+    </log>
+    <property expression="json-eval($.accountId)" name="accountId" scope="default" type="STRING"/>
+    <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+    <call>
+        <endpoint>
+            <http method="get" uri-template="http://localhost:8290/services/CustomerInfo/account/{accountId}">
+                <suspendOnFailure>
+                    <initialDuration>-1</initialDuration>
+                    <progressionFactor>1.0</progressionFactor>
+                </suspendOnFailure>
+                <markForSuspension>
+                    <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                </markForSuspension>
+            </http>
+        </endpoint>
+    </call>
+    <log level="full">
+        <property name="Sequence" value="AccountSequence completed"/>
+    </log>
+</sequence>

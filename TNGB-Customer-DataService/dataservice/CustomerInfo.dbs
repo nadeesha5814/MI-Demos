@@ -1,0 +1,31 @@
+<data name="CustomerInfo" serviceNamespace="" serviceGroup="" transports="http https">
+    <config id="PostgreSQLDataSource">
+        <property name="driverClassName">org.postgresql.Driver</property>
+        <property name="url">jdbc:postgresql://localhost:5432/demo-db</property>
+        <property name="username">nadeesha</property>
+        <property name="password"></property>
+    </config>
+    
+    <query id="getAccountById" useConfig="PostgreSQLDataSource">
+        <sql>SELECT accountId, firstName, lastName, kycStatus FROM accounts WHERE accountId = :accountId</sql>
+        <param name="accountId" sqlType="INTEGER"/>
+        <result outputType="json">{
+   "CustomerInformation":{
+      "Customer":[
+         {
+            "accountId":"$accountId",
+            "firstName":"$firstName",
+            "lastName":"$lastName",
+            "kycStatus":"$kycStatus"
+         }
+      ]
+   }
+}</result>
+    </query>
+
+    <resource method="GET" path="/account/{accountId}">
+        <call-query href="getAccountById">
+            <with-param name="accountId" query-param="accountId"/>
+        </call-query>
+    </resource>
+</data>

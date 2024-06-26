@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/http-tcp" name="HTTP-TCP" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST">
+        <inSequence>
+            <log level="full">
+                <property name="HTTP_TO_TCP" value="Received HTTP request"/>
+            </log>
+            <property name="OUT_ONLY" scope="default" type="STRING" value="true"/>
+            <!-- Send the message to a TCP endpoint -->
+            <call>
+                <endpoint>
+                    <address uri="tcp://localhost:12345">
+                        <timeout>
+                            <duration>60000</duration>
+                            <responseAction>discard</responseAction>
+                        </timeout>
+                        <suspendOnFailure>
+                            <initialDuration>-1</initialDuration>
+                            <progressionFactor>1</progressionFactor>
+                        </suspendOnFailure>
+                        <markForSuspension>
+                            <retriesBeforeSuspension>0</retriesBeforeSuspension>
+                        </markForSuspension>
+                    </address>
+                </endpoint>
+            </call>
+            <payloadFactory media-type="json">
+                <format>
+			
+			{ “message has been sent” }
+			
+			</format>
+                <args/>
+            </payloadFactory>
+            <respond/>
+        </inSequence>
+        <outSequence>
+            <send/>
+        </outSequence>
+        <faultSequence>
+            <log level="full">
+                <property name="ERROR" value="true"/>
+                <property expression="get-property('ERROR_MESSAGE')" name="message"/>
+            </log>
+            <send/>
+        </faultSequence>
+    </resource>
+</api>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><artifacts>
+    <artifact name="HTTP-TCP" groupId="com.example.api" version="1.0.0" type="synapse/api" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/api/HTTP-TCP.xml</file>
+    </artifact>
+    <artifact name="HTTP-TCP_swagger" groupId="com.example.metadata" version="1.0.0" type="synapse/metadata" serverRole="EnterpriseServiceBus">
+        <file>src/main/resources/metadata/HTTP-TCP_swagger.yaml</file>
+    </artifact>
+    <artifact name="HTTP-TCP_metadata" groupId="com.example.metadata" version="1.0.0" type="synapse/metadata" serverRole="EnterpriseServiceBus">
+        <file>src/main/resources/metadata/HTTP-TCP_metadata.yaml</file>
+    </artifact>
+    <artifact name="resolveKYCStatus" groupId="com.example.sequence" version="1.0.0" type="synapse/sequence" serverRole="EnterpriseServiceBus">
+        <file>src/main/synapse-config/sequences/resolveKYCStatus.xml</file>
+    </artifact>
+</artifacts>
