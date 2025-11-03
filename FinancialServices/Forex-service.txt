@@ -1,0 +1,10 @@
+Forex Endpoint  	
+url - https://dev-tools.wso2.com/gs/helpers/v1.0/
+Resource - /currency/rate
+
+
+Message format
+{
+    "fromCurrency": " ",
+    "toCurrency": "USD"
+}

@@ -1,0 +1,32 @@
+<data name="voip-database" serviceNamespace="" serviceGroup="" transports="http https" disableStreaming="true">
+    <description>VOIP Database</description>
+
+    <config id="Postgres">
+        <property name="driverClassName">org.postgresql.Driver</property>
+        <property name="url">jdbc:postgresql://localhost:5432/voip_db</property>
+        <property name="username">nadeesha</property>
+    </config>
+
+    <!-- Query to insert into the database -->
+    <query id="insertVoipRequest" useConfig="Postgres">
+        <sql>
+            INSERT INTO voip_requests (ticket_id, created_at)
+            VALUES (:ticket_id, now())
+        </sql>
+        <param name="ticket_id" paramType="SCALAR" sqlType="STRING"/>
+    </query>
+
+    <!-- Define the operation -->
+    <operation name="addVoipRequest">
+        <call-query href="insertVoipRequest">
+            <with-param name="ticket_id" query-param="ticket_id"/>
+        </call-query>
+    </operation>
+
+    <!-- REST API Mapping using query parameter -->
+    <resource method="POST" path="/addRequest">
+        <call-query href="insertVoipRequest">
+            <with-param name="ticket_id" query-param="ticket_id"/>
+        </call-query>
+    </resource>
+</data>

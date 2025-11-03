@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/deposit" name="Deposit" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/">
+        <inSequence>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+    
+    <resource methods="POST" uri-template="/fx-deposit">
+        <inSequence>
+            <http.post configKey="NewCurrencyService">
+                <relativePath>/currency/rate</relativePath>
+                <headers>[]</headers>
+                <requestBodyType>JSON</requestBodyType>
+                <requestBodyJson>{"fromCurrency": "${payload.currency}", "toCurrency": "USD"}</requestBodyJson>
+                <forceScAccepted>false</forceScAccepted>
+                <disableChunking>false</disableChunking>
+                <forceHttp10>false</forceHttp10>
+                <noKeepAlive>false</noKeepAlive>
+                <forcePostPutNobody>false</forcePostPutNobody>
+                <responseVariable>http_post_1</responseVariable>
+                <overwriteBody>false</overwriteBody>
+            </http.post>
+            <filter xpath="${vars.http_post_1.attributes.statusCode==200}">
+                <then>
+                    <payloadFactory media-type="json">
+                        <format>{
+    "status": "successful",
+    "amountDeposited": ${payload.amount * vars.http_post_1.payload.rate}
+}</format>
+                    </payloadFactory>
+                </then>
+                <else>
+                    <payloadFactory media-type="json">
+                        <format>{
+    "status": "unsuccessful",
+    "error": "${vars.http_post_1.payload.message}"
+}</format>
+                    </payloadFactory>
+                </else>
+            </filter>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+    
+    <resource methods="POST" uri-template="/fx-deposit-2">
+        <inSequence>
+            <http.post configKey="NewCurrencyService">
+                <relativePath>/currency/rate</relativePath>
+                <headers>[]</headers>
+                <requestBodyType>JSON</requestBodyType>
+                <requestBodyJson>{"fromCurrency": "${payload.currency}", "toCurrency": "USD"}</requestBodyJson>
+                <forceScAccepted>false</forceScAccepted>
+                <disableChunking>false</disableChunking>
+                <forceHttp10>false</forceHttp10>
+                <noKeepAlive>false</noKeepAlive>
+                <forcePostPutNobody>false</forcePostPutNobody>
+                <responseVariable>forexResponse</responseVariable>
+                <overwriteBody>false</overwriteBody>
+            </http.post>
+            <filter xpath="${vars.forexResponse.attributes.statusCode==200}">
+                <then>
+                    <log category="INFO">
+                        <message>Forex service call successful</message>
+                    </log>
+                    <payloadFactory media-type="json">
+                        <format>{
+    "status": "success",
+    "rate": ${vars.forexResponse.payload.rate},
+    "fromCurrency": "${vars.forexResponse.payload.fromCurrency}",
+    "toCurrency": "${vars.forexResponse.payload.toCurrency}"
+}</format>
+                    </payloadFactory>
+                </then>
+                <else>
+                    <log category="ERROR">
+                        <message>Forex service call failed with status: ${vars.forexResponse.attributes.statusCode}</message>
+                    </log>
+                    <payloadFactory media-type="json">
+                        <format>{
+    "status": "error",
+    "message": "Failed to retrieve forex rate",
+    "statusCode": ${vars.forexResponse.attributes.statusCode}
+}</format>
+                    </payloadFactory>
+                </else>
+            </filter>
+            <respond/>
+        </inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+</api>

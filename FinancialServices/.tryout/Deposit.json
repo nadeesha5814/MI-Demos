@@ -1,0 +1,18 @@
+{
+  "type": "API",
+  "/": {
+    "requests": [
+      {
+        "name": "Payload",
+        "contentType": "application/json",
+        "content": {
+          "currency": "EUR",
+          "amount": 100
+        },
+        "queryParams": {},
+        "pathParams": {}
+      }
+    ],
+    "defaultRequest": "Payload"
+  }
+}

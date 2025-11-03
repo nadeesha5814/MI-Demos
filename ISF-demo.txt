@@ -1,0 +1,47 @@
+CREATE DATABASE voip_db;
+\c voip_db
+
+CREATE TABLE voip_requests (
+ticket_id VARCHAR(20) PRIMARY KEY,
+WH_order_number VARCHAR(20),
+provisioning_number VARCHAR(20),
+status VARCHAR(20) CHECK (status IN ('INITIATED', 'IN_PROGRESS', 'COMPLETED', 'FAILED')),
+created_at TIMESTAMP DEFAULT NOW()
+);
+
+## Usecase
+
+Create request
+
+1. BPM calls WSO2 to create a request (with employee no, workstation no, phone type).
+2. WSO2 creates a ticket in ITMS (Gets the ticket number).
+3. WSO2 Call the Warehouse system with the ticket number to place to order (gets the WH Order number).
+4. WSO2 call the VOIP system to provision (Get the provision no).
+5. WSO2 aggregates all the information and send it to BPM
+
+Status
+
+1. BPM call WSO2 to check the status with WSO2 (with ticket no)
+2. WSO2 check the status of the ticket from itms.
+3. WSO2 returns the status to BPM.
+
+
+          <http.post configKey="WarehouseServer">
+    <relativePath >/create-job
+</relativePath>
+    <headers >[]</headers>
+    <requestBodyType >JSON</requestBodyType>
+    <requestBodyJson >${payload}</requestBodyJson>
+    <forceScAccepted >false</forceScAccepted>
+    <disableChunking >false</disableChunking>
+    <forceHttp10 >false</forceHttp10>
+    <noKeepAlive >false</noKeepAlive>
+    <forcePostPutNobody >false</forcePostPutNobody>
+    <responseVariable >WarehouseResponse</responseVariable>
+    <overwriteBody >true</overwriteBody>
+</http.post>
+ <enrich>
+                <source type="body" clone="true" property="WarehouseResponse"/>
+                <target type="property" property="ticketIdJson"/>
+            </enrich>
+<respond/>

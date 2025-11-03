@@ -1,0 +1,10 @@
+---
+key: "Deposit-1.0.0"
+name : "Deposit"
+displayName : "Deposit"
+description: "Deposit"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/deposit"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

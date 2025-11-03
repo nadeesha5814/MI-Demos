@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api context="/voip" name="Voip" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="GET" uri-template="/status/{ticketId}">
+        <inSequence>
+          
+            <call>
+                <endpoint>
+                    <http method="get" uri-template="http://localhost:3000/itms/ticket/{uri.var.ticketId}"/>
+                </endpoint>
+            </call>
+
+            <respond/>
+        </inSequence>
+
+       
+
+        <faultSequence>
+            <log level="full">
+                <property name="Error" value="An error occurred while fetching ticket status"/>
+            </log>
+            <property name="HTTP_SC" value="500" scope="axis2"/>
+            <payloadFactory media-type="json">
+                <format>
+                    { "error": "Failed to retrieve ticket status" }
+                </format>
+            </payloadFactory>
+            <send/>
+        </faultSequence>
+    </resource>
+    <resource methods="POST" uri-template="/Request">
+        <inSequence>
+             <propertyGroup >
+    <property name="requesterId" scope="default" type="STRING" action="set" expression="json-eval($.requesterId)" />
+        <property name="deskNo" scope="default" type="STRING" action="set" expression="json-eval($.deskNo)" />
+
+</propertyGroup>
+            <http.post configKey="ITMSServer">
+                <relativePath>/create-ticket</relativePath>
+                <headers>[]</headers>
+                <requestBodyType>JSON</requestBodyType>
+                <requestBodyJson>${payload}</requestBodyJson>
+                <forceScAccepted>false</forceScAccepted>
+                <disableChunking>false</disableChunking>
+                <forceHttp10>false</forceHttp10>
+                <noKeepAlive>false</noKeepAlive>
+                <forcePostPutNobody>false</forcePostPutNobody>
+                <responseVariable>ITMS-Response</responseVariable>
+                <overwriteBody>true</overwriteBody>
+            </http.post>
+           
+            <!-- Use JSON-eval to pick only ticketId -->
+            <property name="ticketId" scope="default" type="STRING" expression="json-eval($.ticketId)" />
+
+
+            <payloadFactory  media-type="json" template-type="default">
+        
+        <format>
+                    {
+                        "ticketId": "$1",
+                        "requesterId": "$2",
+                        "deskNo": "$3"
+                    }
+                </format>
+
+                 <args>
+                    <arg evaluator="xml" expression="get-property('ticketId')"/>
+                    <arg evaluator="xml" expression="get-property('requesterId')"/>
+                    <arg evaluator="xml" expression="get-property('deskNo')"/>
+                </args>
+</payloadFactory>
+            
+  
+<http.post configKey="WarehouseServer">
+    <relativePath >/create-job
+</relativePath>
+    <headers >[]</headers>
+    <requestBodyType >JSON</requestBodyType>
+    <requestBodyJson >${payload}</requestBodyJson>
+    <forceScAccepted >false</forceScAccepted>
+    <disableChunking >false</disableChunking>
+    <forceHttp10 >false</forceHttp10>
+    <noKeepAlive >false</noKeepAlive>
+    <forcePostPutNobody >false</forcePostPutNobody>
+    <responseVariable >WarehouseResponse</responseVariable>
+    <overwriteBody >true</overwriteBody>
+</http.post>
+<property name="deviceId" scope="default" type="STRING" expression="json-eval($.deviceId)" />
+
+<payloadFactory  media-type="json" template-type="default">
+        
+        <format>
+                    {
+                        "ticketId": "$1",
+                        "requesterId": "$2",
+                        "deskNo": "$3",
+                        "deviceId": "$4"
+                    }
+                </format>
+
+                 <args>
+                    <arg evaluator="xml" expression="get-property('ticketId')"/>
+                    <arg evaluator="xml" expression="get-property('requesterId')"/>
+                    <arg evaluator="xml" expression="get-property('deskNo')"/>
+                    <arg evaluator="xml" expression="get-property('deviceId')"/>
+                </args>
+</payloadFactory>
+
+        <http.post configKey="VOIPServer">
+    <relativePath >/provision</relativePath>
+    <headers >[]</headers>
+    <requestBodyType >JSON</requestBodyType>
+    <requestBodyJson >${payload}</requestBodyJson>
+    <forceScAccepted >false</forceScAccepted>
+    <disableChunking >false</disableChunking>
+    <forceHttp10 >false</forceHttp10>
+    <noKeepAlive >false</noKeepAlive>
+    <forcePostPutNobody >false</forcePostPutNobody>
+    <responseVariable >voip-response</responseVariable>
+    <overwriteBody >true</overwriteBody>
+</http.post>
+<property name="voipProvisionId" scope="default" type="STRING" expression="json-eval($.voipProvisionId)" />
+
+<payloadFactory  media-type="json" template-type="default">
+        
+       <format>
+                    {
+                        "ticketId": "$1",
+                        "requesterId": "$2",
+                        "deskNo": "$3",
+                        "deviceId": "$4",
+                        "provisionId": "$5"
+                    }
+                </format>
+
+                 <args>
+                    <arg evaluator="xml" expression="get-property('ticketId')"/>
+                    <arg evaluator="xml" expression="get-property('requesterId')"/>
+                    <arg evaluator="xml" expression="get-property('deskNo')"/>
+                    <arg evaluator="xml" expression="get-property('deviceId')"/>
+                    <arg evaluator="xml" expression="get-property('voipProvisionId')"/>   
+                </args>
+
+
+</payloadFactory><respond /></inSequence>
+        <faultSequence>
+        </faultSequence>
+    </resource>
+</api>
