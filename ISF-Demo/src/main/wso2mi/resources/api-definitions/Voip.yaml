@@ -1,6 +1,6 @@
 openapi: 3.0.1
 info:
-  title: Voip
+  title: voip
   description: API Definition of Voip
   version: 1.0.0
 servers:
