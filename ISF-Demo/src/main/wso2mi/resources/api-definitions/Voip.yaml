@@ -4,8 +4,8 @@ info:
   description: API Definition of Voip
   version: 1.0.0
 servers:
-- url: http://localhost:8290/voip
-- url: https://localhost:8253/voip
+- url: http://localhost:8290/
+- url: https://localhost:8253/
 paths:
   /status/{ticketId}:
     get:
