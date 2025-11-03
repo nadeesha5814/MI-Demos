@@ -86,7 +86,7 @@ app.get("/itms/ticket/:ticketId", (req, res) => {
   const ticket = tickets[ticketId];
 
   if (!ticket) {
-    return res.status(404).json({
+    return res.status(200).json({
       error: `Ticket with ID ${ticketId} not found.`,
     });
   }
