@@ -5,7 +5,7 @@
           
             <call>
                 <endpoint>
-                    <http method="get" uri-template="http://localhost:3000/itms/ticket/{uri.var.ticketId}"/>
+                    <http method="get" uri-template="https://ac7bcfac-ffe1-4b05-876c-04848fabbfb0-dev.e1-us-east-azure.choreoapis.dev/isf/backend-service/v1.0/itms/ticket/{uri.var.ticketId}"/>
                 </endpoint>
             </call>
 

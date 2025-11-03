@@ -2,7 +2,7 @@
 <localEntry key="VOIPServer" xmlns="http://ws.apache.org/ns/synapse">
   <http.init>
     <connectionType>HTTP</connectionType>
-    <baseUrl>http://localhost:3000/voip</baseUrl>
+    <baseUrl>https://ac7bcfac-ffe1-4b05-876c-04848fabbfb0-dev.e1-us-east-azure.choreoapis.dev/isf/backend-service/v1.0/voip</baseUrl>
     <authType>None</authType>
     <timeoutAction>Never</timeoutAction>
     <retryCount>0</retryCount>
