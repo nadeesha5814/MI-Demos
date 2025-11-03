@@ -27,7 +27,7 @@
             <send/>
         </faultSequence>
     </resource>
-    <resource methods="POST" uri-template="/Request">
+    <resource methods="POST" uri-template="/request">
         <inSequence>
              <propertyGroup >
     <property name="requesterId" scope="default" type="STRING" action="set" expression="json-eval($.requesterId)" />

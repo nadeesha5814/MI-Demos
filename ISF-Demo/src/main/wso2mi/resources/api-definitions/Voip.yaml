@@ -20,7 +20,7 @@ paths:
       responses:
         default:
           description: Default response
-  /Request:
+  /request:
     post:
       requestBody:
         description: Sample Payload
